@@ -7,6 +7,7 @@ import neat
 import random
 import pickle
 
+
 no_of_success = []
 no_of_success_eating = []
 x_length_of_world = 60
@@ -105,19 +106,19 @@ def scanned_array_to_dead_array(scanned_array):
                 new_scanned_array.append(100)
     
     
-    # if(scanned_array[3] == 1):
-    #     new_scanned_array[2] = 1
-    # if(scanned_array[7] == 1):
-    #     new_scanned_array[0] = 1
-
     if(scanned_array[3] == 1):
-        new_scanned_array.append(1)
-    else:
-        new_scanned_array.append(0)
+        new_scanned_array[2] = 1
     if(scanned_array[7] == 1):
-        new_scanned_array.append(1)
-    else:
-        new_scanned_array.append(0)
+        new_scanned_array[0] = 1
+
+    # if(scanned_array[3] == 1):
+    #     new_scanned_array.append(1)
+    # else:
+    #     new_scanned_array.append(0)
+    # if(scanned_array[7] == 1):
+    #     new_scanned_array.append(1)
+    # else:
+    #     new_scanned_array.append(0)
 
         
     return new_scanned_array
@@ -286,7 +287,7 @@ def main(genomes, config):
     
     
     
-    for turn in range(100):
+    for turn in range(150):
         if show: 
             printworld()             
         for x, single_organism in enumerate(organisms_list):              
@@ -355,7 +356,6 @@ def run(config_file):
     winner = p.run(main, 1500)     #call main func 100 times
     with open('winner_genome.pkl', 'wb') as f:
         pickle.dump(winner, f)
-
 
 if __name__ == '__main__':
     # Determine path to configuration file
