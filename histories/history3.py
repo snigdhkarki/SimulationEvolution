@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 
 
-world = [[0 for _ in range(20)] for _ in range(20)]
+world = [[0 for _ in range(60)] for _ in range(60)]
 organisms = []
 
 def initial_body_positioner (position):
@@ -226,7 +226,7 @@ class Organism:
                 distance += 1
                 x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
                 y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
-                if x<0 or y<0 or x>19 or y>19:
+                if x<0 or y<0 or x>59 or y>59:
                     direction_value.append(0)
                     direction_value.append(distance)
                     break
@@ -269,44 +269,64 @@ class Organism:
 # Ram.move([0,2,3,0,1,3,0,0,0,2,3,2])
 # printworld()
 
-
+def scanned_array_to_dead_array(scanned_array):
+    new_scanned_array = []
+    for i,element in enumerate(scanned_array):
+        if (i%4==0):
+            if(element == 5):
+                new_scanned_array.append(scanned_array[i+1])
+            if(element != 5):
+                new_scanned_array.append(100)
+    
+    
+    if(scanned_array[3] == 1):
+        new_scanned_array[2] = 1
+    if(scanned_array[7] == 1):
+        new_scanned_array[0] = 1
+        
+    return new_scanned_array
 # main
-Ram = Organism([2,2])
-Shyam = Organism([2,5])
-Hari = Organism([5,2])
-Hari.body.append([[0,2],6])
-body_positioner(Hari.position, Hari.position, Hari.body, Hari.body)
-Krishna = Organism([5,7])
+# Ram = Organism([2,2])
+Shyam = Organism([15,17])
+world[14][18]= 5
+world[17][17]= 5
+world[15][23]= 5
 printworld()
-print("--------------------------------------------------------------------")
-Ram.move([0,0,0,3,1,2,0,1.5,0,2,0,2])
-printworld()
-print("--------------------------------------------------------------------")
-Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
-printworld()
-print("--------------------------------------------------------------------")
-Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
-printworld()
-print("--------------------------------------------------------------------")
-Krishna.move([0,0,0,0,0,0,0,2,0,2,0,0])
-printworld()
-print("--------------------------------------------------------------------")
-Krishna.move([0,0,0,2,0,0,0,0,0,2,0,0])
-Krishna.move([0,0,0,2,0,0,0,0,0,2,0,0])
-printworld()
-print("--------------------------------------------------------------------")
-print(Hari.energy)
-print(Hari.scan())
-Hari.move([0,0,0,0,0,2,0,0,0,2,0,0])
-Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
-Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
-print("distance of deadcell from Ram")
-print(distance_from_closest_deadcell(world, (Ram.position[0], Ram.position[1])))
-Hari.move([0,2,0,0,0,0,0,0,0,2,0,0])
-printworld()
-print("--------------------------------------------------------------------")
-print(Hari.energy)
-print(Hari.scan())
+print(scanned_array_to_dead_array(Shyam.scan()))
+# Hari = Organism([44,2])
+# Hari.body.append([[0,2],6])
+# body_positioner(Hari.position, Hari.position, Hari.body, Hari.body)
+# Krishna = Organism([5,7])
+# printworld()
+# print("--------------------------------------------------------------------")
+# Ram.move([0,0,0,3,1,2,0,1.5,0,2,0,2])
+# printworld()
+# print("--------------------------------------------------------------------")
+# Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
+# printworld()
+# print("--------------------------------------------------------------------")
+# Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
+# printworld()
+# print("--------------------------------------------------------------------")
+# Krishna.move([0,0,0,0,0,0,0,2,0,2,0,0])
+# printworld()
+# print("--------------------------------------------------------------------")
+# Krishna.move([0,0,0,2,0,0,0,0,0,2,0,0])
+# Krishna.move([0,0,0,2,0,0,0,0,0,2,0,0])
+# printworld()
+# print("--------------------------------------------------------------------")
+# print(Hari.energy)
+# print(Hari.scan())
+# Hari.move([0,0,0,0,0,2,0,0,0,2,0,0])
+# Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
+# Hari.move([0,0,0,2,0,0,0,0,0,2,0,0])
+# print("distance of deadcell from Ram")
+# print(distance_from_closest_deadcell(world, (Ram.position[0], Ram.position[1])))
+# Hari.move([0,2,0,0,0,0,0,0,0,2,0,0])
+# printworld()
+# print("--------------------------------------------------------------------")
+# print(Hari.energy)
+# print(Hari.scan())
 
 
 

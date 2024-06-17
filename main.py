@@ -251,7 +251,7 @@ def main(genomes, config):
     
     for turn in range(50):
         if show: 
-            printworld()       
+            printworld()             
         for x, single_organism in enumerate(organisms_list):              
             for _ in range(find_num_of_legs(single_organism)):
                 input = single_organism.scan()                        
@@ -276,7 +276,7 @@ def main(genomes, config):
         world[random.randint(0, 59)][random.randint(10, 59)] = 5
     organisms = []
 
-def run(config_file):    
+def run(config_file):
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_file)    
@@ -287,7 +287,7 @@ def run(config_file):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main, 5000)     #call main func 100 times and pass it all birds
+    winner = p.run(main, 5000)     #call main func 100 times 
 
 if __name__ == '__main__':
     # Determine path to configuration file
