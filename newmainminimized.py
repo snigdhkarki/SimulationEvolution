@@ -106,19 +106,19 @@ def scanned_array_to_dead_array(scanned_array):
                 new_scanned_array.append(100)
     
     
-    if(scanned_array[3] == 1):
-        new_scanned_array[2] = 1
-    if(scanned_array[7] == 1):
-        new_scanned_array[0] = 1
-
     # if(scanned_array[3] == 1):
-    #     new_scanned_array.append(1)
-    # else:
-    #     new_scanned_array.append(0)
+    #     new_scanned_array[2] = 1
     # if(scanned_array[7] == 1):
-    #     new_scanned_array.append(1)
-    # else:
-    #     new_scanned_array.append(0)
+    #     new_scanned_array[0] = 1
+
+    if(scanned_array[3] == 1):
+        new_scanned_array.append(100)
+    else:
+        new_scanned_array.append(0)
+    if(scanned_array[7] == 1):
+        new_scanned_array.append(100)
+    else:
+        new_scanned_array.append(0)
 
         
     return new_scanned_array
