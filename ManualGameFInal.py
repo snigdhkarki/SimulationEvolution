@@ -38,8 +38,7 @@ def printworld():
     for row in world:
         print(row)
     print('-----------------------------------------------')
-    
-        
+         
 def map_colors(array, color_names):
     color_array = []
     for row in array:
@@ -270,26 +269,19 @@ class Organism:
                     type_distance.append(distance)
                     break
         return type_distance
+
 Ram = Organism([30,8])
 Shyam = Organism([30,52])
 
-# Initialize Pygame
+
 pygame.init()
-
-
-# Constants
 width, height = 800, 650
 SCREEN_WIDTH, SCREEN_HEIGHT = 800,650
 screen = pygame.display.set_mode((width, height))
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 FONT_SIZE = 20
-
-# Font for text rendering
 font = pygame.font.SysFont('Arial', FONT_SIZE)
-
-
-
 
 # Function to display opening screen
 def display_opening_screen(screen):
@@ -298,17 +290,12 @@ def display_opening_screen(screen):
     # Display title
     title_text = font.render('K_Up/W: up, K_Down/S: down, K_Left/A: left, K_Right/D: right', True, BLACK)
     screen.blit(title_text, ((SCREEN_WIDTH - title_text.get_width()) // 2, 50))
-
     title_text2 = font.render('up and down at once for clockwise rotation, right and left at once for anticlockwise rotation',True,BLACK)
-    screen.blit(title_text2, ((SCREEN_WIDTH - title_text2.get_width()) // 2, 90))
-    
-    
+    screen.blit(title_text2, ((SCREEN_WIDTH - title_text2.get_width()) // 2, 90))    
     
     # Display instructions
     instructions_text = font.render('Enter a list of numbers separated by spaces for evolution of left then right:', True, BLACK)
     screen.blit(instructions_text, ((SCREEN_WIDTH - instructions_text.get_width()) // 2, 200))
-    
-
     
     pygame.display.flip()
 
@@ -317,7 +304,7 @@ def get_user_input(screen):
     input_box = pygame.Rect((SCREEN_WIDTH - 300) // 2, 250, 300, 40)
     input_text = ''
     input_active = True
-    
+
     while input_active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -333,37 +320,22 @@ def get_user_input(screen):
                 elif event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
                 else:
-                    input_text += event.unicode
-        
+                    input_text += event.unicode        
         
         pygame.draw.rect(screen, BLACK, input_box, 2)
         text_surface = font.render(input_text, True, BLACK)
         screen.blit(text_surface, (input_box.x + 5, input_box.y + 10))    
-        pygame.display.flip()    
-
-    
-        
-
-
+        pygame.display.flip()   
+   
 # Function to start the game with user input
 def start_game(numbers):
     global color_names
     global world
     global array
-    array = map_colors(world, color_names)
-
-    
-    
+    array = map_colors(world, color_names)    
     screen.fill(BLACK)
-
     print("Starting game with numbers:", numbers)
-    
-
-
     clock = pygame.time.Clock()
-    
-
-
 
     # Function to draw the 2D array
     def draw_array():
@@ -505,32 +477,19 @@ def start_game(numbers):
         if keys[pygame.K_a]:
             go_left2()
                 
-
     # Main game loop
     running = True
-    while running:
-
-        
-        running = handle_events()
-
-        
-        keys = pygame.key.get_pressed()
-
-        
-        handle_continuous_keys(keys)     
-
-        handle_continuous_keys2(keys)        
-                
-
-
+    while running:        
+        running = handle_events()        
+        keys = pygame.key.get_pressed()        
+        handle_continuous_keys(keys)    
+        handle_continuous_keys2(keys)  
         # Draw the 2D array
         draw_array()
-
         # Update the display
         pygame.display.flip()
         clock.tick(10)
-
-    # Quit Pygame
+    
     pygame.quit()
     sys.exit()
 
@@ -547,7 +506,6 @@ def main():
     numbers2 = get_user_input(screen)
     list_to_evolution_caller2(numbers2)
     start_game(numbers)
-    
     pygame.quit()
     sys.exit()
 

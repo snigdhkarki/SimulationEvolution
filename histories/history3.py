@@ -207,31 +207,42 @@ class Organism:
         print(self.body)
         body_positioner(self.position, self.position, old_body, self.body)
     
-    def scan(self):
-        #output: array of type and distance starting from 12 oclock direction clockwise
-        direction_value = []
-        for direction in [[-1,0], [-1,1], [0,1],[1,1], [1,0], [1,-1],[0,-1],[-1,-1]]:  
-            distance= 1
-            while True:                
-                inbody = False
-                for element in self.body:
-                    if element[0] == [distance*direction[0],distance*direction[1]]:
-                        inbody = True
-                x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
-                y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
-                if world[x][y] != 0 and (not inbody):
-                    direction_value.append(world[x][y])
-                    direction_value.append(distance)
-                    break
-                distance += 1
-                x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
-                y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
-                if x<0 or y<0 or x>59 or y>59:
-                    direction_value.append(0)
-                    direction_value.append(distance)
-                    break
+    # def scan(self):
+    #     # output: array of type and distance starting from 12 oclock direction clockwise
+    #     direction_value = []
+    #     for direction in [[-1,0], [-1,1], [0,1],[1,1], [1,0], [1,-1],[0,-1],[-1,-1]]:  
+    #         distance= 1
+    #         while True:                
+    #             inbody = False
+    #             for element in self.body:
+    #                 if element[0] == [distance*direction[0],distance*direction[1]]:
+    #                     inbody = True
+    #             x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
+    #             y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
+    #             if world[x][y] != 0 and (not inbody):
+    #                 direction_value.append(world[x][y])
+    #                 direction_value.append(distance)
+    #                 break
+    #             distance += 1
+    #             x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
+    #             y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
+    #             if x<0 or y<0 or x>59 or y>59:
+    #                 direction_value.append(0)
+    #                 direction_value.append(distance)
+    #                 break
                 
-        return direction_value
+    #     return direction_value
+    def scan(self):
+        onehotencoded = []
+        for i in [-2,-1,0,1,2]:
+            for j in [-2,-1,0,1,2]:     
+                array = [0,0,0,0,0]  
+                if not(((self.position[0]+i) <0) or ((self.position[0]+i)>59) or ((self.position[1]+j)<0) or ((self.position[1]+j)>59) or (world[self.position[0]+i][self.position[1]+j]==0)):
+                    array[world[self.position[0]+i][self.position[1]+j]-1]=1
+                onehotencoded.append(array)
+        onehotencodedresult = [item for sublist in onehotencoded for item in sublist]
+        return onehotencodedresult
+        
                 
                     
                 
@@ -240,9 +251,10 @@ class Organism:
         
 
 
-# Ram = Organism([2,2])
-# Shyam = Organism([2,5])
-# printworld()
+Ram = Organism([2,2])
+Shyam = Organism([2,5])
+print(Ram.scan())
+printworld()
 # print("--------------------------------------------------------------------")
 # Ram.evolve([
 #     [0, 0, 0, 0, 0, 2, 0],
@@ -269,30 +281,30 @@ class Organism:
 # Ram.move([0,2,3,0,1,3,0,0,0,2,3,2])
 # printworld()
 
-def scanned_array_to_dead_array(scanned_array):
-    new_scanned_array = []
-    for i,element in enumerate(scanned_array):
-        if (i%4==0):
-            if(element == 5):
-                new_scanned_array.append(scanned_array[i+1])
-            if(element != 5):
-                new_scanned_array.append(100)
+# def scanned_array_to_dead_array(scanned_array):
+#     new_scanned_array = []
+#     for i,element in enumerate(scanned_array):
+#         if (i%4==0):
+#             if(element == 5):
+#                 new_scanned_array.append(scanned_array[i+1])
+#             if(element != 5):
+#                 new_scanned_array.append(100)
     
     
-    if(scanned_array[3] == 1):
-        new_scanned_array[2] = 1
-    if(scanned_array[7] == 1):
-        new_scanned_array[0] = 1
+#     if(scanned_array[3] == 1):
+#         new_scanned_array[2] = 1
+#     if(scanned_array[7] == 1):
+#         new_scanned_array[0] = 1
         
-    return new_scanned_array
+#     return new_scanned_array
 # main
 # Ram = Organism([2,2])
-Shyam = Organism([15,17])
-world[14][18]= 5
-world[17][17]= 5
-world[15][23]= 5
-printworld()
-print(scanned_array_to_dead_array(Shyam.scan()))
+# Shyam = Organism([15,17])
+# world[14][18]= 5
+# world[17][17]= 5
+# world[15][23]= 5
+# printworld()
+# print(scanned_array_to_dead_array(Shyam.scan()))
 # Hari = Organism([44,2])
 # Hari.body.append([[0,2],6])
 # body_positioner(Hari.position, Hari.position, Hari.body, Hari.body)

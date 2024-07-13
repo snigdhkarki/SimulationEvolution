@@ -7,11 +7,11 @@ import neat
 import random
 
 no_of_success = []
-x_length_of_world = 60
+x_length_of_world = 300
 y_length_of_world = 60
 world = [[0 for _ in range(y_length_of_world)] for _ in range(x_length_of_world)]
-for i in range(100):
-    world[random.randint(0, 59)][random.randint(10, 59)] = 5
+for i in range(500):
+    world[random.randint(0, 299)][random.randint(10, 59)] = 5
 organisms = []
 
 
@@ -86,25 +86,20 @@ def find_num_of_legs(organism):
             no_of_legs += 1
     return no_of_legs
 
-def distance_from_closest_deadcell(grid, position):
-    #input: takes in a 2d matrix representing the world and tuple representing position of organism (x,y) 
-    #output: the distance from closest 5(dead cell) to organism
-    rows = len(grid)
-    cols = len(grid[0])
-    x, y = position   
-    min_distance = float('inf') 
-    
-    for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] == 5:
-                distance = (abs(x - i)*abs(x - i) + abs(y - j)*abs(y - j))**(1/2)
-                if distance < min_distance:
-                    min_distance = distance
-
-    if min_distance != float('inf'):
-        return min_distance 
-    else:
-        raise ValueError("trying to find closest distance to 5 when there is no 5 in world")
+def new_move_to_old_move(new_direction_and_turn_array):   
+    max_value = max(new_direction_and_turn_array)
+    max_indexes = [i for i,element in enumerate(new_direction_and_turn_array) if element == max_value]
+    random_max_index = random.choice(max_indexes)
+    new_direction_and_turn_array[random_max_index] +=1
+    direction_and_turn_array = [0 for _ in range(12)]
+    i=1
+    for element in new_direction_and_turn_array:        
+        if element<0:
+            direction_and_turn_array[i] = 0
+        else:
+            direction_and_turn_array[i] = element
+        i += 2
+    return direction_and_turn_array
 
 class Organism:
     def __init__(self, position):
@@ -183,7 +178,7 @@ class Organism:
                             for element1 in  self.body:
                                 if element1[1] == 4:
                                     muscle_count += 1
-                            if self.energy < muscle_count:                                
+                            if self.energy < 100:                                
                                 self.energy += 1
                                 world[add_arrays_1d(element[0], self.position)[0]][add_arrays_1d(element[0], self.position)[1]]=0
                     if element[1] == 6:
@@ -220,29 +215,39 @@ class Organism:
         body_positioner(self.position, self.position, old_body, self.body)
     
     def scan(self):
+        onehotencoded = []
+        for i in [-2,-1,0,1,2]:
+            for j in [-2,-1,0,1,2]:     
+                array = [0,0,0,0,0]  
+                if not(((self.position[0]+i) <0) or ((self.position[0]+i)>299) or ((self.position[1]+j)<0) or ((self.position[1]+j)>59) or (world[self.position[0]+i][self.position[1]+j]==0)):
+                    array[world[self.position[0]+i][self.position[1]+j]-1]=1
+                onehotencoded.append(array)
+        onehotencodedresult = [item for sublist in onehotencoded for item in sublist]
+        return onehotencodedresult
+
         #output: array of type and distance starting from 12 oclock direction clockwise
-        type_distance = []
-        for direction in [[-1,0], [-1,1], [0,1],[1,1], [1,0], [1,-1],[0,-1],[-1,-1]]:  
-            distance= 1
-            while True:                
-                inbody = False
-                for element in self.body:
-                    if element[0] == [distance*direction[0],distance*direction[1]]:
-                        inbody = True
-                x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
-                y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
-                if world[x][y] != 0 and (not inbody):
-                    type_distance.append(world[x][y])
-                    type_distance.append(distance)
-                    break
-                distance += 1
-                x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
-                y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
-                if x<0 or y<0 or x>=x_length_of_world or y>=y_length_of_world:
-                    type_distance.append(0)
-                    type_distance.append(distance)
-                    break
-        return type_distance
+        # type_distance = []
+        # for direction in [[-1,0], [-1,1], [0,1],[1,1], [1,0], [1,-1],[0,-1],[-1,-1]]:  
+        #     distance= 1
+        #     while True:                
+        #         inbody = False
+        #         for element in self.body:
+        #             if element[0] == [distance*direction[0],distance*direction[1]]:
+        #                 inbody = True
+        #         x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
+        #         y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
+        #         if world[x][y] != 0 and (not inbody):
+        #             type_distance.append(world[x][y])
+        #             type_distance.append(distance)
+        #             break
+        #         distance += 1
+        #         x = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[0]
+        #         y = add_arrays_1d(self.position, [distance*direction[0],distance*direction[1]])[1]
+        #         if x<0 or y<0 or x>=x_length_of_world or y>=y_length_of_world:
+        #             type_distance.append(0)
+        #             type_distance.append(distance)
+        #             break
+        # return type_distance
 
 GEN = 0
 
@@ -258,7 +263,9 @@ def main(genomes, config):
     organisms_list = []
     x = 2
     y = 2 
-    show = False   
+    show = False
+    if GEN==500:
+        show = True 
     for _, g in genomes:
         net = neat.nn.FeedForwardNetwork.create(g, config)
         nets.append(net)
@@ -268,36 +275,36 @@ def main(genomes, config):
         ge.append(g)
     
     
-    
-    for turn in range(50):
+    oldenergy = [0 for _ in range(50)]
+    for turn in range(150):
         if show: 
-            printworld()       
+            printworld()             
         for x, single_organism in enumerate(organisms_list):              
-            for _ in range(find_num_of_legs(single_organism)):
-                input = single_organism.scan()                        
-                output = nets[organisms_list.index(single_organism)].activate(tuple(input))  
-                single_organism.move(list(output))
-            ge[x].fitness += single_organism.energy * 1.4/2
-            ge[x].fitness += (30 / distance_from_closest_deadcell(world, (single_organism.position[0], single_organism.position[1])))/50   #2 energy and distance from deadcell causes fitness to increase and 100 fitness is peak fitness in config file   
-
+            
+            input = single_organism.scan()                        
+            output = nets[organisms_list.index(single_organism)].activate(tuple(input))  
+            single_organism.move(new_move_to_old_move(list(output)))
+            ge[x].fitness += (single_organism.energy *3)-oldenergy[x]   #2 energy causes 80 fitness and 100 fitness is peak fitness in config file   
+            oldenergy[x] =  single_organism.energy *3
     
     ge_list = []
-    for i in range(10):
+    for i in range(50):
         ge_list.append(ge[i].fitness)                 
-    if all(element >= 70 for element in ge_list):
+    if all(element >=(3*5) for element in ge_list) or ((sum(ge_list)/3)>300):
         show = True
-    no_of_success.append(sum(1 for value in ge_list if value >= 70))
+    no_of_success.append(int(sum(ge_list)/(3*len(ge_list))))
+    print(no_of_success)
     
 
     
-    x_length_of_world = 60
+    x_length_of_world = 300
     y_length_of_world = 60
     world = [[0 for _ in range(y_length_of_world)] for _ in range(x_length_of_world)]
-    for i in range(100):
-        world[random.randint(0, 59)][random.randint(10, 59)] = 5
+    for i in range(500):
+        world[random.randint(0, 299)][random.randint(10, 59)] = 5
     organisms = []
 
-def run(config_file):    
+def run(config_file):
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_file)    
@@ -308,16 +315,13 @@ def run(config_file):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main, 5000)     #call main func 100 times and pass it all organisms
-    average_fitness_array = stats.get_fitness_mean()
-    print(average_fitness_array)
+    winner = p.run(main, 5000)     #call main func 100 times 
 
 if __name__ == '__main__':
     # Determine path to configuration file
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-feedforward.txt')
+    config_path = os.path.join(local_dir, 'new-minimized-config-feedforward.txt')
     run(config_path)           
 
-print(no_of_success)
 
         

@@ -1,5 +1,6 @@
-
-
-array = [1,2,5,2]
-array.remove(5)
-print(array)
+lol = 5
+def sus():    
+    print(lol)
+    lol = 6
+sus()
+sus()
